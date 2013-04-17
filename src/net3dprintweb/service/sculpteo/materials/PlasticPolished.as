@@ -10,7 +10,6 @@ package net3dprintweb.service.sculpteo.materials
 		public static const GREEN:String ="plastic_polished_green";
 		public static const BEIGE:String = "plastic_polished_beige";
 		public static const BROWN:String ="plastic_polished_brown";
-		//public static const GREY:String ="plastic_polished_grey";
 		public static const ORANGE:String ="plastic_polished_orange";
 		public static const PINK:String ="plastic_polished_pink";
 
@@ -20,7 +19,6 @@ package net3dprintweb.service.sculpteo.materials
 			ret.push(BLUE);
 			ret.push(BROWN);
 			ret.push(GREEN);
-			//ret.push(GREY);
 			ret.push(RED);
 			ret.push(ORANGE);
 			ret.push(PINK);
