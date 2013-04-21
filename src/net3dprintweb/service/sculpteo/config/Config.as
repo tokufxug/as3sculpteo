@@ -6,7 +6,7 @@ package net3dprintweb.service.sculpteo.config
 	{
 		private static const DEFAULT_HOST:String = "sculpteo.com";
 		public var language:String = Language.ENGLISH;
-		public var isSSL:Boolean = true;
+		public var isSSL:Boolean = false;
 
 		public function changeLaguage(value:String):void {
 			language = value;

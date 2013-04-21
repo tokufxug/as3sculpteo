@@ -1,5 +1,10 @@
 package net3dprintweb.service.sculpteo.mapper
 {
+	import com.laiyonghao.Uuid;
+
+	import flash.net.URLVariables;
+	import flash.utils.ByteArray;
+
 	import net3dprintweb.service.sculpteo.code.Customizable;
 	import net3dprintweb.service.sculpteo.code.PrintAuthorization;
 	import net3dprintweb.service.sculpteo.code.Share;
@@ -8,14 +13,12 @@ package net3dprintweb.service.sculpteo.mapper
 	import net3dprintweb.service.sculpteo.upload.data.Rotation;
 	import net3dprintweb.service.sculpteo.utils.SculpteoUtil;
 
-	import flash.net.URLVariables;
-	import flash.utils.ByteArray;
-
 	public class URLVariablesMapper
 	{
 		public static const DESIGNER:String = "designer";
 		public static const PASSWORD:String = "password";
 		public static const LIST:String = "list";
+		public static const TRACK_ID:String = "trackid";
 
 		public static const NAME:String ="name";
 		public static const FILENAME:String ="filename";
@@ -34,12 +37,18 @@ package net3dprintweb.service.sculpteo.mapper
 
 		public static function mapping(data:DesignData, account:Account = null):URLVariables {
 			var ret:URLVariables = null;
+			var trackId:String = null;
 			ret = createDefaultURLVariables(data);
+
 			if (account) {
 					setProperty(ret, DESIGNER, account.designer);
 					setProperty(ret, PASSWORD, account.password);
-					setProperty(ret, LIST, account.list);
+					trackId = account.trackId;
 			}
+			if (trackId == null || trackId.length < 8) {
+				trackId = new Uuid().toString();
+			}
+			ret[TRACK_ID] = trackId;
 			return ret;
 		}
 

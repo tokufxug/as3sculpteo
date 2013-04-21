@@ -1,16 +1,5 @@
 package net3dprintweb.service.sculpteo.upload
 {
-	import net3dprintweb.service.sculpteo.config.Config;
-	import net3dprintweb.service.sculpteo.config.DirectUploadConfig;
-	import net3dprintweb.service.sculpteo.events.DirectUploadEvent;
-	import net3dprintweb.service.sculpteo.info.Account;
-	import net3dprintweb.service.sculpteo.mapper.URLVariablesMapper;
-	import net3dprintweb.service.sculpteo.materials.Ceramic;
-	import net3dprintweb.service.sculpteo.materials.Other;
-	import net3dprintweb.service.sculpteo.upload.data.DesignData;
-	import net3dprintweb.service.sculpteo.upload.data.DirectUploadFaultData;
-	import net3dprintweb.service.sculpteo.upload.data.DirectUploadResultData;
-
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.events.HTTPStatusEvent;
@@ -21,10 +10,25 @@ package net3dprintweb.service.sculpteo.upload
 	import flash.net.URLRequestMethod;
 	import flash.net.URLVariables;
 
+	import net3dprintweb.service.sculpteo.config.Config;
+	import net3dprintweb.service.sculpteo.config.DirectUploadConfig;
+	import net3dprintweb.service.sculpteo.events.DirectUploadEvent;
+	import net3dprintweb.service.sculpteo.events.UploadDesignTrackingEvent;
+	import net3dprintweb.service.sculpteo.info.Account;
+	import net3dprintweb.service.sculpteo.mapper.URLVariablesMapper;
+	import net3dprintweb.service.sculpteo.materials.Ceramic;
+	import net3dprintweb.service.sculpteo.materials.Other;
+	import net3dprintweb.service.sculpteo.upload.data.DesignData;
+	import net3dprintweb.service.sculpteo.upload.data.DirectUploadFaultData;
+	import net3dprintweb.service.sculpteo.upload.data.DirectUploadResultData;
+	import net3dprintweb.service.sculpteo.upload.track.UploadDesignTracking;
+
 	public class DirectUpload extends EventDispatcher
 	{
 		private var _config:DirectUploadConfig;
 		private var _data:Object;
+		private var _track:UploadDesignTracking = new UploadDesignTracking();
+
 		public function DirectUpload(config:DirectUploadConfig)
 		{
 			_config = config;
@@ -33,13 +37,14 @@ package net3dprintweb.service.sculpteo.upload
 		public function upload(designData:DesignData, account:Account = null):void {
 			var urlLoader:URLLoader = new URLLoader();
 
-			urlLoader.addEventListener(Event.COMPLETE, onComplete);
+			urlLoader.addEventListener(Event.COMPLETE, onDesignComplete);
 			urlLoader.addEventListener(IOErrorEvent.IO_ERROR, onIOError);
 			urlLoader.addEventListener(HTTPStatusEvent.HTTP_STATUS, onStatus);
-			urlLoader.load(createHttpURLRequest(designData, account));
+			urlLoader.load(createDesignRequest(designData, account));
+			track(_data[URLVariablesMapper.TRACK_ID]);
 		}
 
-		private function createHttpURLRequest(designData:DesignData, account:Account):URLRequest {
+		private function createDesignRequest(designData:DesignData, account:Account):URLRequest {
 			_config.isSSL = account != null;
 			var ret:URLRequest = new URLRequest(_config.URL);
 
@@ -51,7 +56,17 @@ package net3dprintweb.service.sculpteo.upload
 			return ret;
 		}
 
-		private function onComplete(event:Event):void {
+		private function track(trackId:String):void {
+			_track.addEventListener(UploadDesignTrackingEvent.TRACKING,
+				dispatchTrackingEvent);
+			_track.start(trackId);
+		}
+
+		private function dispatchTrackingEvent(event:UploadDesignTrackingEvent):void {
+			dispatchEvent(event);
+		}
+
+		private function onDesignComplete(event:Event):void {
 			var data:String = event.currentTarget.data;
 			var result:Object = null;
 			try {
@@ -68,6 +83,9 @@ package net3dprintweb.service.sculpteo.upload
 			} catch (e:Error) {
 				dispatchFault(createFaultData(data));
 			} finally {
+				_track.removeEventListener(UploadDesignTrackingEvent.TRACKING,
+					dispatchTrackingEvent);
+				_track.stop();
 				_data = null;
 			}
 		}
@@ -109,8 +127,11 @@ package net3dprintweb.service.sculpteo.upload
 		}
 
 		private function onIOError(event:IOErrorEvent):void {
-			dispatchEvent(event);
+			_track.removeEventListener(UploadDesignTrackingEvent.TRACKING,
+				dispatchTrackingEvent);
+			_track.stop();
 			_data = null;
+			dispatchEvent(event);
 		}
 
 		private function onStatus(event:HTTPStatusEvent):void {
