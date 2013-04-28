@@ -9,7 +9,7 @@ package net3dprintweb.service.sculpteo.upload.data
 		public var file:Object;
 		public var description:String;
 		public var keywords:String;
-		public var isShares:Boolean = true;
+		public var isShares:Boolean = false;
 		public var isPrintAuthorization:Boolean = true;
 		public var isCustomizable:Boolean = true;
 		public var designUnit:String;

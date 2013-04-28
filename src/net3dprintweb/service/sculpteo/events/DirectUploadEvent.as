@@ -7,9 +7,9 @@ package net3dprintweb.service.sculpteo.events
 
 	public class DirectUploadEvent extends Event
 	{
-		public static const RESULT:String = "result";
-		public static const FAULT:String = "fault";
-		public static const ERROR:String = "error";
+		public static const RESULT:String = "net3dprintweb.service.sculpteo.events.DirectUploadEvent.result";
+		public static const FAULT:String = "net3dprintweb.service.sculpteo.events.DirectUploadEvent.fault";
+		public static const ERROR:String = "net3dprintweb.service.sculpteo.events.DirectUploadEvent.error";
 
 		public var result:DirectUploadResultData;
 		public var fault:DirectUploadFaultData;

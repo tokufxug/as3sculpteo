@@ -54,7 +54,6 @@ package net3dprintweb.service.sculpteo.upload.track
 			}
 			trackEvent.data = trackData;
 			dispatchEvent(trackEvent);
-
 			switch(data.state) {
 				case STATE_STARTING:
 				case STATE_UPLODING:

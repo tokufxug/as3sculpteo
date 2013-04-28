@@ -14,7 +14,7 @@ public class DirectUploadConfig extends Config
 
 		public function setDesignURL(result:DirectUploadResultData):void {
 			result.url = "http://www.sculpteo.com/"
-				+ language + "/design/" + result.name + "/" + result.uuid;
+				+ language + "/design/" + result.name.toLowerCase() + "/" + result.uuid;
 		}
 	}
 }

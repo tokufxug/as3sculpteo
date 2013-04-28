@@ -6,7 +6,7 @@ package net3dprintweb.service.sculpteo.events
 
 	public class UploadDesignTrackingEvent extends Event
 	{
-		public static const TRACKING:String = "tracking";
+		public static const TRACKING:String = "net3dprintweb.service.sculpteo.events.UploadDesignTrackingEvent.tracking";
 		public var state:String;
 		public var data:UploadDesignTrackingData;
 		public function UploadDesignTrackingEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)

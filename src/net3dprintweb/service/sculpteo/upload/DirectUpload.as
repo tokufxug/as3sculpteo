@@ -29,8 +29,11 @@ package net3dprintweb.service.sculpteo.upload
 		private var _data:Object;
 		private var _track:UploadDesignTracking = new UploadDesignTracking();
 
-		public function DirectUpload(config:DirectUploadConfig)
+		public function DirectUpload(config:DirectUploadConfig = null)
 		{
+			if (!config) {
+				config = new DirectUploadConfig();
+			}
 			_config = config;
 		}
 
@@ -41,29 +44,33 @@ package net3dprintweb.service.sculpteo.upload
 			urlLoader.addEventListener(IOErrorEvent.IO_ERROR, onIOError);
 			urlLoader.addEventListener(HTTPStatusEvent.HTTP_STATUS, onStatus);
 			urlLoader.load(createDesignRequest(designData, account));
-			track(_data[URLVariablesMapper.TRACK_ID]);
+			//track(_data[URLVariablesMapper.TRACK_ID]);
 		}
 
 		private function createDesignRequest(designData:DesignData, account:Account):URLRequest {
 			_config.isSSL = account != null;
+			var v:URLVariables = URLVariablesMapper.mapping(designData, account);
 			var ret:URLRequest = new URLRequest(_config.URL);
-
 			ret.requestHeaders.push(
 				new URLRequestHeader('X-Requested-With', 'XMLHttpRequest'));
 			ret.method = URLRequestMethod.POST;
-			ret.data = URLVariablesMapper.mapping(designData, account);
+			ret.data = v;
 			_data = ret.data;
 			return ret;
 		}
 
 		private function track(trackId:String):void {
-			_track.addEventListener(UploadDesignTrackingEvent.TRACKING,
-				dispatchTrackingEvent);
+			_track.addEventListener(UploadDesignTrackingEvent.TRACKING, dispatchTrackingEvent);
 			_track.start(trackId);
 		}
 
 		private function dispatchTrackingEvent(event:UploadDesignTrackingEvent):void {
-			dispatchEvent(event);
+			var trackEvent:UploadDesignTrackingEvent = new UploadDesignTrackingEvent(
+					UploadDesignTrackingEvent.TRACKING);
+
+			trackEvent .state = event.state;
+			trackEvent .data = event.data;
+			dispatchEvent(trackEvent);
 		}
 
 		private function onDesignComplete(event:Event):void {
