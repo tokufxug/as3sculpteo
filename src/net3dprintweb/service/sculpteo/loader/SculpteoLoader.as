@@ -19,7 +19,7 @@ package net3dprintweb.service.sculpteo.loader
 		}
 
 		public function loadBinary(url:String):void {
-			doLoad(url, URLLoaderDataFormat.BINARY, onLoadZip);
+			doLoad(url, URLLoaderDataFormat.BINARY, onLoadBinary);
 		}
 
 		private function doLoad(url:String, format:String, func:Function):void {
@@ -36,8 +36,8 @@ package net3dprintweb.service.sculpteo.loader
 			onLoad(event.currentTarget.data, String);
 		}
 
-		private function onLoadZip(event:Event):void {
-			removeEventListener(Event.COMPLETE, onLoadZip);
+		private function onLoadBinary(event:Event):void {
+			removeEventListener(Event.COMPLETE, onLoadBinary);
 			onLoad(event.currentTarget.data, ByteArray);
 		}
 
