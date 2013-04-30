@@ -12,10 +12,9 @@ package net3dprintweb.service.sculpteo.utils
 		public static function encode(value:String):String {
 			var ret:String = value;
 			ret = Base64.encode(ret);
-			ret = ret.replace(/\n/g, "");
-			ret = ret.replace(/=/g, "");
-			ret = ret.replace(/+/g, "-");
-			ret = ret.replace(/\//g, "_");
+			ret = ret.replace(/+/g, "_");
+			ret = ret.replace(/\//g, "-");
+			ret = ret.replace(/=/g, ".");
 			return ret;
 		}
 
