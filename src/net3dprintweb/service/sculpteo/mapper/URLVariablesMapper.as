@@ -57,8 +57,7 @@ package net3dprintweb.service.sculpteo.mapper
 
 			setProperty(v, NAME, data.name);
 			setProperty(v, FILENAME, data.fileName);
-			setProperty(v, FILE, data.file is ByteArray ? SculpteoUtil.encodeByteArray(data.file as ByteArray) :
-				SculpteoUtil.encode(data.file as String));
+			setProperty(v, FILE, SculpteoUtil.toZip(data.fileName, data.file));
 			setProperty(v, DESC,  data.description);
 			setProperty(v, KEYWORDS,data.keywords);
 			setProperty(v, SHARE, data.isShares ? Share.YES : Share.NO);

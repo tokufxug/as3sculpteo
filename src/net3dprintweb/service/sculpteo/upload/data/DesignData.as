@@ -1,5 +1,7 @@
 package net3dprintweb.service.sculpteo.upload.data
 {
+	import flash.utils.ByteArray;
+
 	import net3dprintweb.service.sculpteo.code.DesignUnit;
 
 	public class DesignData
